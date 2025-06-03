@@ -4,6 +4,7 @@ import requests
 from aiogram import Bot, Dispatcher, types
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 from aiogram.utils import executor
+import asyncio  # добавлено
 
 API_TOKEN = '8066927688:AAFipaqyM4qoUODZ705PDocSZSSEEGWCVik'
 PUPPETEER_URL = 'https://puppeteer-server-g0r7.onrender.com/generate?query='
@@ -60,7 +61,6 @@ async def handle_manual_input(message: types.Message):
 
 @dp.message_handler()
 async def handle_message(message: types.Message):
-    # Сброс режима, если нажата другая кнопка
     if message.text in ["🎲 Рандом еда", "🍴 Настроить блюда", "🏬 По ресторану"]:
         user_state.pop(message.chat.id, None)
 
@@ -90,5 +90,10 @@ async def handle_message(message: types.Message):
     sent = await message.answer("Выберите кнопку или введите заказ.")
     user_last_message[message.chat.id] = sent.message_id
 
+# 🔧 добавляем асинхронный запуск с удалением webhook
+async def main():
+    await bot.delete_webhook(drop_pending_updates=True)
+    await dp.start_polling()
+
 if __name__ == '__main__':
-    executor.start_polling(dp, skip_updates=True)
+    asyncio.run(main())
