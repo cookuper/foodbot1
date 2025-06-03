@@ -36,8 +36,8 @@ async def handle_message(message: types.Message):
     if message.text[0].isalpha():
         try:
             r = requests.get(PUPPETEER_URL + message.text)
-            await message.reply("🧠 Думаю...
-" + r.text)
+            await message.reply("🧠 Думаю...\n" + r.text)
+
         except:
             await message.reply("❌ Ошибка при подключении к серверу")
     else:
