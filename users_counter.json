@@ -1,4 +1,5 @@
 {
-  "base_fake": 40,
-  "real_users": 0
+    "base_fake": 40,
+    "real_users": 0,
+    "ids": []
 }

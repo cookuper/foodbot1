@@ -1,7 +1,6 @@
 import logging
-import requests
 import json
-import os
+import requests
 from aiogram import Bot, Dispatcher, types
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 from aiogram.utils import executor
@@ -9,7 +8,6 @@ from aiogram.utils import executor
 API_TOKEN = '8066927688:AAFipaqyM4qoUODZ705PDocSZSSEEGWCVik'
 PUPPETEER_URL = 'https://puppeteer-server-g0r7.onrender.com/generate?query='
 USERS_FILE = 'users_counter.json'
-START_FROM = 40
 
 logging.basicConfig(level=logging.INFO)
 
@@ -25,26 +23,29 @@ kb.add(KeyboardButton("🏬 По ресторану"))
 user_last_message = {}
 
 def get_user_count(user_id):
-    if os.path.exists(USERS_FILE):
+    try:
         with open(USERS_FILE, 'r') as f:
             data = json.load(f)
-    else:
-        data = []
+    except FileNotFoundError:
+        data = {"base_fake": 40, "real_users": 0, "ids": []}
 
-    if user_id not in data:
-        data.append(user_id)
+    if "ids" not in data:
+        data["ids"] = []
+
+    if user_id not in data["ids"]:
+        data["ids"].append(user_id)
+        data["real_users"] += 1
         with open(USERS_FILE, 'w') as f:
             json.dump(data, f)
 
-    return len(data) + START_FROM
+    return data["base_fake"] + data["real_users"]
 
 @dp.message_handler(commands=['start'])
 async def send_welcome(message: types.Message):
     count = get_user_count(message.from_user.id)
-    text = f"Добро пожаловать! Выберите действие 👇\n👥 Активных пользователей за месяц: {count}"
-    await message.answer(text, reply_markup=kb)
+    await message.answer(f"Добро пожаловать! Выберите действие 👇\nАктивных пользователей за месяц: {count}", reply_markup=kb)
 
-@dp.message_handler(lambda message: message.text.startswith("✍"))
+@dp.message_handler(lambda message: message.text.startswith("\u270d"))
 async def handle_manual_input(message: types.Message):
     if message.chat.id in user_last_message:
         try:
