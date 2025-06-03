@@ -26,9 +26,10 @@ async def send_welcome(message: types.Message):
 
 @dp.message_handler(lambda message: message.text.startswith("✍"))
 async def handle_manual_input(message: types.Message):
-    await message.reply("Отправьте заказ в формате:
+    await message.reply("""Отправьте заказ в формате:
+пятерочка лапша кола 700""")
 
-лапша сосиски кола 700")
+
 
 @dp.message_handler()
 async def handle_message(message: types.Message):
