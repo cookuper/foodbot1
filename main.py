@@ -3,6 +3,8 @@ import requests
 from aiogram import Bot, Dispatcher, types
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 from aiogram.utils import executor
+import json
+import os
 
 API_TOKEN = '8066927688:AAFipaqyM4qoUODZ705PDocSZSSEEGWCVik'
 PUPPETEER_URL = 'https://puppeteer-server-g0r7.onrender.com/generate?query='
@@ -19,10 +21,29 @@ kb.add(KeyboardButton("✍ Ввести вручную"))
 kb.add(KeyboardButton("🏬 По ресторану"))
 
 user_last_message = {}
+USERS_FILE = "users.json"
+
+def load_users():
+    if not os.path.exists(USERS_FILE):
+        return []
+    with open(USERS_FILE, "r") as f:
+        return json.load(f)
+
+def save_users(users):
+    with open(USERS_FILE, "w") as f:
+        json.dump(users, f)
 
 @dp.message_handler(commands=['start'])
 async def send_welcome(message: types.Message):
-    await message.answer("Добро пожаловать! Выберите действие 👇", reply_markup=kb)
+    users = load_users()
+    user_id = message.from_user.id
+    if user_id not in users:
+        users.append(user_id)
+        save_users(users)
+
+    fake_start = 40
+    count = fake_start + len(users)
+    await message.answer(f"Добро пожаловать! Выберите действие 👇\n👥 Пользователей за месяц: {count}", reply_markup=kb)
 
 @dp.message_handler(lambda message: message.text.startswith("\u270d"))
 async def handle_manual_input(message: types.Message):
@@ -31,7 +52,7 @@ async def handle_manual_input(message: types.Message):
             await bot.delete_message(chat_id=message.chat.id, message_id=user_last_message[message.chat.id])
         except:
             pass
-    sent = await message.answer("""Отправьте заказ в формате:\nпятерочка лапша кола 700""")
+    sent = await message.answer("Отправьте заказ в формате:\nпятерочка лапша кола 700")
     user_last_message[message.chat.id] = sent.message_id
 
 @dp.message_handler()
@@ -44,10 +65,10 @@ async def handle_message(message: types.Message):
                     await bot.delete_message(chat_id=message.chat.id, message_id=user_last_message[message.chat.id])
                 except:
                     pass
-            sent = await message.answer("\ud83e\udde0 Думаю...\n" + r.text)
+            sent = await message.answer("🧠 Думаю...\n" + r.text)
             user_last_message[message.chat.id] = sent.message_id
         except:
-            await message.answer("\u274c Ошибка при подключении к серверу")
+            await message.answer("❌ Ошибка при подключении к серверу")
     else:
         if message.chat.id in user_last_message:
             try:
