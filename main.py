@@ -5,8 +5,9 @@ from aiogram import Bot, Dispatcher, types
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 from aiogram.utils import executor
 
-API_TOKEN = 'YOUR_BOT_TOKEN_HERE'
-PUPPETEER_URL = PUPPETEER_URL = 'https://puppeteer-server-g0r7.onrender.com/generate?query='
+API_TOKEN = '8066927688:AAFipaqyM4qoUODZ705PDocSZSSEEGWCVik'
+PUPPETEER_URL = 'https://puppeteer-server-g0r7.onrender.com/generate?query='
+
 
 logging.basicConfig(level=logging.INFO)
 
