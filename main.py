@@ -6,7 +6,7 @@ from aiogram import Bot, Dispatcher, types
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 from aiogram.utils import executor
 
-API_TOKEN = 'твой_токен_бота'
+API_TOKEN = '8066927688:AAFipaqyM4qoUODZ705PDocSZSSEEGWCVik'
 PUPPETEER_URL = 'https://puppeteer-server-g0r7.onrender.com/generate?query='
 USERS_FILE = 'users_counter.json'
 START_FROM = 40
